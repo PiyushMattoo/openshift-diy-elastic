@@ -1,0 +1,8 @@
+#!/bin/sh
+# The logic to stop your application should be put in this script.
+
+if [ -z "$(ps -ef | grep elasticsearch | grep -v grep)" ]; then
+echo "Application is already stopped"
+else
+  kill `ps -ef | grep elasticsearch | grep -v grep | awk '{ print $2 }'`
+fi

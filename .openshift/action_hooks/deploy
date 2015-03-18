@@ -1,0 +1,42 @@
+#!/bin/bash
+# This is a simple build script and will be executed on your CI system if 
+# available.  Otherwise it will execute while your application is stopped
+# before the deploy step.  This script gets executed directly, so it
+# could be python, php, ruby, etc.
+
+ELASTICSEARCH_VERSION='1.4.4'
+ELASTICSEARCH_NAME="elasticsearch-${ELASTICSEARCH_VERSION}"
+ELASTICSEARCH_URL="https://download.elasticsearch.org/elasticsearch/elasticsearch/${ELASTICSEARCH_NAME}.tar.gz"
+
+INSTALL_DIR=${OPENSHIFT_HOMEDIR}/app-root/runtime
+TEMPLATES_DIR=${OPENSHIFT_REPO_DIR}/.openshift/templates
+
+
+function build_elasticsearch()
+{
+	echo "1"
+	cd ${INSTALL_DIR}
+	
+	echo "2"
+	wget ${ELASTICSEARCH_URL}
+	echo "3"
+	tar xvf ${ELASTICSEARCH_NAME}.tar.gz
+		echo "4"
+	mv ${ELASTICSEARCH_NAME} elasticsearch
+
+	mkdir -p ${INSTALL_DIR}/elasticsearch/run/
+
+	rm ${ELASTICSEARCH_NAME}.tar.gz
+}
+
+
+function check_and_install_elasticsearch()
+{
+	if [[ ! -e ${INSTALL_DIR}/elasticsearch/bin/elasticsearch ]]; then
+	    echo "Inside Build"
+		build_elasticsearch
+	fi
+}
+
+
+check_and_install_elasticsearch
